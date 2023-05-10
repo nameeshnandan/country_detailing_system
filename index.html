@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Detailing System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <h1 class="text-center">Country Detailing System</h1>
+    <div class="container" >
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <center>
+            <div class="col-4 searchbox mt-4 border border-2 border-light p-5 rounded-4 shadow">
+                
+                    <input id="country" type="text" placeholder="Enter country name" class="input form-control mt-3 mb-3">
+                    <div class="text-center">
+                         <input onclick="searchData()" type="button" placeholder="Search" class="btn btn-outline-successs btn-primary rounded-4" value="Search">
+                    </div>
+                    <!-- <button class="btn btn-primary ">Search</button> -->
+            </center>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        <div id="mainrow" class="row mt-3 p-5 ">
+            <div id="div1" class="col-6"></div>
+
+            <div id="div2" class="col-6">
+                <div id="photodiv" ></div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        function searchData(){
+            var countryName=country.value
+            // console.log(countryName);
+            fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`)
+            .then(result=>(result.json())) // convertion of JSON data to array
+            .then(data=>displayData(data)) //function call
+            .catch(error=>{
+                alert('Faild to fetch data');
+            })
+        }
+        function displayData(data){
+            capital=data[0].capital;
+            languages = Object.values(data[0].languages).toString().split(",").join(",");
+            currencies = Object.keys(data[0].currencies)
+            htmlData=`     <center>
+            <div class="card" style="width: 400px;">
+                <img class="card-img-top" src=" ${data[0].flags.png}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-family: Arial, Helvetica, sans-serif;font-size: 30px;    color: rgb(185, 15, 15); text-transform: uppercase;"> ${data[0].name.common}</h5>
+                    <p class="card-text"style="font-family: Arial, Helvetica, sans-serif;font-size: 20px;    color: rgb(185, 15, 15);">Official Name: ${data[0].name.official}</p>
+                </div>
+                <ul class="list-group list-group-flush" style="text-align: start;margin-left: 20px;">
+                    <li class="list-group-item">Capital : ${capital}</li>
+                    <li class="list-group-item">Region : ${data[0].region}</li>
+                    <li class="list-group-item">Languages : ${languages}</li>
+                    <li class="list-group-item">Currency : ${currencies}</li>
+                    <li class="list-group-item">Area : ${data[0].area}</li>
+                    <li class="list-group-item">Population : ${data[0].population}</li>
+                   
+                </ul>
+              
+
+                <div class="card-body">
+                    <a href="#" class="card-link"></a>
+                    <a href="#" class="card-link"></a>
+                </div>
+                </div></center>
+            `
+            div1.innerHTML=htmlData;
+            htmlData2=`<h3>COAT OF ARMS</h3>
+                <img style:"width=200px;" src="${data[0].coatOfArms.png}" alt="">
+            `
+            photodiv.innerHTML=htmlData2;
+            // mainrow.innerHTML = "<style:     border: 2px solid white;>" + "</style>"
+        }
+    </script>
+</body>
+</html>
